@@ -23,14 +23,14 @@ app.use(express.static(publicDirectoryPath));
 app.get("", (req, res) => {
   res.render("index", {
     title: "Weather",
-    name: "Andrew Mead",
+    name: "Gaurav Sharma",
   });
 });
 
 app.get("/about", (req, res) => {
   res.render("about", {
     title: "About Me",
-    name: "Andrew Mead",
+    name: "Gaurav Sharma",
   });
 });
 
@@ -38,68 +38,52 @@ app.get("/help", (req, res) => {
   res.render("help", {
     helpText: "This is some helpful text.",
     title: "Help",
-    name: "Andrew Mead",
+    name: "Gaurav Sharma",
   });
 });
 
 app.get("/weather", (req, res) => {
   if (!req.query.address) {
     return res.send({
-      error: "You must provide an address!",
+      error: "address must be provided",
     });
   }
-
-  geocode(
-    req.query.address,
-    (error, { latitude, longitude, location } = {}) => {
-      if (error) {
-        return res.send({ error });
-      }
-
-      forecast(latitude, longitude, (error, forecastData) => {
+  geocode(req.query.address, (error, data = {}) => {
+    if (error) {
+      res.send({ error });
+    } else {
+      forecast(data, (error, datas) => {
         if (error) {
-          return res.send({ error });
+          res.send({ error });
+        } else {
+          res.send({
+            forecast: datas.forecast,
+            location: datas.location,
+            address: req.query.address,
+          });
         }
-
-        res.send({
-          forecast: forecastData,
-          location,
-          address: req.query.address,
-        });
       });
     }
-  );
-});
-
-app.get("/products", (req, res) => {
-  if (!req.query.search) {
-    return res.send({
-      error: "You must provide a search term",
-    });
-  }
-
-  console.log(req.query.search);
-  res.send({
-    products: [],
   });
 });
 
 app.get("/help/*", (req, res) => {
   res.render("404", {
     title: "404",
-    name: "Andrew Mead",
-    errorMessage: "Help article not found.",
+    name: "Gaurav Sharma",
+    error: "Help article not found",
   });
 });
 
 app.get("*", (req, res) => {
   res.render("404", {
     title: "404",
-    name: "Andrew Mead",
-    errorMessage: "Page not found.",
+    name: "Gaurav Sharma",
+    error: "Page not found",
   });
 });
 
 app.listen(port, () => {
   console.log("Server is up on port " + port);
 });
+
