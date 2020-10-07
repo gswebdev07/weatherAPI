@@ -10,7 +10,7 @@ form.addEventListener("submit", (e) => {
   message1.style.opacity = "1";
   message2.style.opacity = "0";
   e.preventDefault();
-  fetch("http://localhost:3000/weather?address=" + address.value)
+  fetch("/weather?address=" + address.value)
     .then((res) => res.json())
     .then((data) => {
       message1.style.opacity = "0";
